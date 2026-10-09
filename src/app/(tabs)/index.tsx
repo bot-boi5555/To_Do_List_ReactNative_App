@@ -6,8 +6,6 @@ export default function Index() {
 		<Text style={styles.content}>Hello World</Text>
 		<Text>Hi</Text>
 
-		
-
 	</View>
   );
 }
