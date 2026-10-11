@@ -1,13 +1,26 @@
-import { StyleSheet, Text, View } from "react-native";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useTheme } from "../../../hooks/useTheme";
 
 export default function Index() {
-  return (
-	<View style={styles.container}>
-		<Text style={styles.content}>Hello World</Text>
-		<Text>Hi</Text>
 
-	</View>
-  );
+	const { toggleDarkMode } = useTheme();
+
+	const todos = useQuery(api.todos.getTodos);
+	console.log(todos);
+
+	return (
+		<View style={styles.container}>
+			<Text style={styles.content}>Hello World</Text>
+			<Text>Hi</Text>
+
+			<TouchableOpacity onPress={toggleDarkMode}>
+				<Text>Toggle the Theme</Text>
+			</TouchableOpacity>
+		</View>
+	);
 }
 
 const styles = StyleSheet.create({
@@ -17,7 +30,7 @@ const styles = StyleSheet.create({
 		gap: 40, 
 		alignItems: "center",
 		justifyContent: "center",
-		backgroundColor: "cyan"
+		backgroundColor: ""
   	},
 
   	content: {
