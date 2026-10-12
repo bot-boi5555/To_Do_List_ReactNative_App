@@ -8,6 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../../../hooks/useTheme";
 
 import Header from "../../../components/Header";
+import TodoInput from "../../../components/TodoInput";
 
 export default function Index() {
 
@@ -25,6 +26,8 @@ export default function Index() {
 			<SafeAreaView style={homeStyles.safeArea}>
 				
 				<Header />
+				
+				<TodoInput />
 
 				<TouchableOpacity onPress={toggleDarkMode}>
 					<Text>Toggle the Theme</Text>
