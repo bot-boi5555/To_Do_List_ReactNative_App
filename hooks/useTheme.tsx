@@ -62,7 +62,7 @@ const lightColors: ColorScheme = {
 		input: "#ffffff",
 		editInput: "#ffffff",
 	},
-	statusBarStyle: "dark-content" as const,
+	statusBarStyle: "light-content" as const,
 };
 
 
