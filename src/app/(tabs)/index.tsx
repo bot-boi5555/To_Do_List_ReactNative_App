@@ -1,14 +1,26 @@
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 
 import { createHomeStyles } from "@/assets/styles/home.styles";
 import { LinearGradient } from "expo-linear-gradient";
-import { StatusBar, Text, TouchableOpacity } from "react-native";
+import { Alert, FlatList, StatusBar, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../../../hooks/useTheme";
 
+import { Text, View } from "react-native";
+import EmptyState from "../../../components/EmptyState";
 import Header from "../../../components/Header";
+import LoadingSpinner from "../../../components/LoadingSpinner";
 import TodoInput from "../../../components/TodoInput";
+
+import { Doc, Id } from "../../../convex/_generated/dataModel";
+
+import { Ionicons } from "@react-native-vector-icons/ionicons";
+
+
+type Todo = Doc<"todos">
+
+
 
 export default function Index() {
 
@@ -17,8 +29,134 @@ export default function Index() {
 	const todos = useQuery(api.todos.getTodos);
 	console.log(todos);
 
+	const toggleTodo = useMutation(api.todos.toggleTodo);
 
 	const homeStyles = createHomeStyles(colors);
+
+	const isLoading = (todos === undefined);
+
+
+
+	if (isLoading) {
+		return (
+			<LoadingSpinner />
+		)
+	}
+
+
+	const handleToggleTodo = async (id:Id<"todos">) => {
+
+		try {
+
+			toggleTodo({id});
+
+		}
+		catch(Error) {
+			console.log("Failed to toggle todo.", Error);
+			Alert.alert("Error", "Failed to toggle todo.");
+		}
+
+	}
+
+
+	const renderTodoItem = ({item}: {item:Todo}) => {
+		
+		return (
+			<View style={homeStyles.todoItemWrapper}>
+
+				<LinearGradient 
+					colors={colors.gradients.surface} 
+					style={homeStyles.todoItem}
+					start={{x: 0, y: 0}}
+					end={{x: 1, y: 1}}
+					>
+					
+					{/* Checkmark */}
+					<TouchableOpacity 
+						style={homeStyles.checkbox}
+						activeOpacity={0.7}
+						onPress={() => handleToggleTodo(item._id) }
+					>
+						
+						<LinearGradient
+							colors={(item.isCompleted ? colors.gradients.success : colors.gradients.muted)}
+
+							style={[homeStyles.checkboxInner, {borderColor: (item.isCompleted ? "Transparent" : colors.border)}]}
+						>
+							
+							{
+								item.isCompleted &&
+								<Ionicons name="checkmark" size={18} color="#ffffff" />
+							}
+
+						</LinearGradient>
+
+					</TouchableOpacity>
+
+					<View style={homeStyles.todoTextContainer}>
+
+						<Text 
+							style={
+								[
+									homeStyles.todoText, 
+									item.isCompleted && {
+										textDecorationLine: "line-through",
+										color:				colors.textMuted,
+										opacity:			0.6
+									}
+								]}
+						>
+							
+							{item.text}
+
+						</Text>
+
+						<View style={homeStyles.todoActions}>
+							
+							<TouchableOpacity 
+								onPress={() => {}}
+								activeOpacity={0.6}
+							>
+
+								<LinearGradient 
+									colors={colors.gradients.warning} 
+									style={homeStyles.actionButton}
+								>
+
+									<Ionicons name="pencil" size={14} color="#ffffff" />
+
+								</LinearGradient>
+
+							</TouchableOpacity>
+
+							
+							<TouchableOpacity 
+								onPress={() => {}}
+								activeOpacity={0.6}
+							>
+
+								<LinearGradient 
+									colors={colors.gradients.danger} 
+									style={homeStyles.actionButton}
+								>
+
+									<Ionicons name="trash" size={14} color="#ffffff" />
+
+								</LinearGradient>
+
+							</TouchableOpacity>
+
+						</View>
+
+
+					</View>
+
+				</LinearGradient>
+
+			</View>
+		)
+
+	}
 
 	return (
 		<LinearGradient colors={colors.gradients.background} style={homeStyles.container} >
@@ -29,9 +167,17 @@ export default function Index() {
 				
 				<TodoInput />
 
-				<TouchableOpacity onPress={toggleDarkMode}>
-					<Text>Toggle the Theme</Text>
-				</TouchableOpacity>
+				{/* FlatList renders only the items that are visible on the screen. */ }
+				<FlatList 
+					data={todos}
+					renderItem={ renderTodoItem }
+					keyExtractor={ (item) => (item._id) }
+					style={homeStyles.todoList}
+					contentContainerStyle={homeStyles.todoListContent}
+					ListEmptyComponent={<EmptyState/>}	//when the list is empty, the empty sate component in the components file will be displayed
+					//showsVerticalScrollIndicator={false} // this removes the scrollbar
+				/>
+				
 			</SafeAreaView>
 		</LinearGradient>
 	);
