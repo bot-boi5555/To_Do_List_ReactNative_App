@@ -17,7 +17,7 @@ function LoadingSpinner() {
 
 				<ActivityIndicator size="large" color={colors.primary}/>
 				
-				<Text>
+				<Text style={homeStyles.loadingText}>
 					Loading your todos...
 				</Text>
 
