@@ -290,7 +290,7 @@ export default function Index() {
 				
 				<TodoInput />
 
-				{/* FlatList renders only the items that are visible on the screen. */ }
+				{/* FlatList renders only the items that are visible on the screen. It has ScrollView properties */ }
 				<FlatList 
 					data={todos}
 					renderItem={ renderTodoItem }
