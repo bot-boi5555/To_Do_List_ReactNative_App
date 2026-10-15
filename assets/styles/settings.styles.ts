@@ -43,7 +43,7 @@ export const createSettingsStyles = (colors: ColorScheme) => {
 		section: {
 			borderRadius: 20,
 			padding: 24,
-			shadowColor: "#000",
+			shadowColor: "#0649ad",
 			shadowOffset: {
 				width: 0,
 				height: 4,
