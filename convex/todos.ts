@@ -35,19 +35,19 @@ export const addTodo = mutation({
 export const toggleTodo = mutation({
 
 	args: {
-		id: v.id("todos")
+		todoId: v.id("todos")
 	},
 
 	handler: async (context, args) => {
 		
-		const todo = await context.db.get(args.id);
+		const todo = await context.db.get(args.todoId);
 
 		if (!todo) {
 			throw new ConvexError("Todo not found.");
 		}
 
 		// patch is used to update
-		await context.db.patch("todos", args.id, {
+		await context.db.patch("todos", args.todoId, {
 			isCompleted: !todo.isCompleted
 		});
 
@@ -70,19 +70,19 @@ export const deleteTodo = mutation({
 export const updatedTodo = mutation({
 	
 	args: {
-		id: 	v.id("todos"), 
+		todoId: 	v.id("todos"), 
 		newText: 	v.string()
 	}, 
 	
 	handler: async (context, args) => {
 		
-		const todo = await context.db.get(args.id);
+		const todo = await context.db.get(args.todoId);
 
 		if (!todo) {
 			throw new ConvexError("Todo not found.");
 		}
 
-		await context.db.patch("todos", args.id, {
+		await context.db.patch("todos", args.todoId, {
 			text: args.newText
 		});
 
